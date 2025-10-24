@@ -1,26 +1,101 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
+  --background: 'linear-gradient(135deg, #F8FAFC 0%, #E2E8F0 100%)';
   --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+     --background: 'linear-gradient(135deg, #F8FAFC 0%, #E2E8F0 100%)';
     --foreground: #ededed;
   }
+}
+
+/* 🔧 ESTILOS PARA O FOOTER FIXO NO FINAL */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Container principal do layout */
+.layout-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Conteúdo principal - ocupa todo o espaço disponível */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* Footer - sempre no final */
+.footer {
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  padding: 1.5rem;
+  text-align: center;
+  border-top: 1px solid rgba(226, 232, 240, 0.8);
+  color: #64748b;
+  margin-top: auto;
+  width: 100%;
+}
+
+/* 🎨 Estilos específicos para o footer */
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  font-size: 0.9rem;
+}
+
+/* 📱 Responsividade */
+@media (max-width: 768px) {
+  .footer {
+    padding: 1rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* 🎯 Garantir que todos os elementos respeitem o box model */
+* {
+  box-sizing: border-box;
+}
+
+/* Estilos adicionais para um footer mais bonito */
+.footer {
+  background: linear-gradient(135deg, rgba(248, 250, 252, 0.9) 0%, rgba(226, 232, 240, 0.9) 100%);
+  backdrop-filter: blur(12px);
+  padding: 1.5rem;
+  text-align: center;
+  border-top: 1px solid rgba(203, 213, 225, 0.6);
+  color: #475569;
+  margin-top: auto;
+  width: 100%;
+  font-weight: 500;
+  box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  font-size: 0.9rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
 }

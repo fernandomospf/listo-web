@@ -1,0 +1,25 @@
+.login-form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    background-color: rgba(255, 255, 255, 0.753);
+    color: black;
+    width: 580px;
+    height: 720px;
+    border-radius: 10px;
+    gap: 20px;
+}
+
+.login-fields-user {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 80%;
+}
+
+.button-login {
+    width: 35%;
+    height: 40px;
+}
