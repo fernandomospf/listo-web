@@ -14,18 +14,32 @@ import { useRouter } from 'next/navigation';
 import CheckBox from '@/public/check-box.gif';
 
 export const Login: React.FC = () => {
-    const { register, handleSubmit, watch, setValue } = useForm();
+    const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm();
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [socialLoading, setSocialLoading] = useState(false);
     const [serverError, setServerError] = useState<string | null>(null);
     const [isClient, setIsClient] = useState(false);
     const [rememberMe, setRememberMe] = useState(false);
-    const [isCheckboxLoaded, setIsCheckboxLoaded] = useState(false); // ✅ Novo state
+    const [isCheckboxLoaded, setIsCheckboxLoaded] = useState(false);
 
-    // ✅ Detecta quando está no cliente
     useEffect(() => {
         setIsClient(true);
+
+        const checkExistingAuth = async () => {
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (session?.access_token) {
+                    saveAuthToken(session.access_token);
+                    console.log('✅ Sessão existente encontrada, redirecionando...');
+                    router.push('/dashboard');
+                }
+            } catch (error) {
+                console.error('Erro ao verificar sessão:', error);
+            }
+        };
+
+        checkExistingAuth();
 
         if (typeof window !== 'undefined') {
             const savedEmail = localStorage.getItem('email');
@@ -33,9 +47,25 @@ export const Login: React.FC = () => {
                 setValue('email', savedEmail);
                 setRememberMe(true);
             }
-            setIsCheckboxLoaded(true); // ✅ Marca que o checkbox pode ser renderizado
+            setIsCheckboxLoaded(true); 
         }
-    }, [setValue]);
+    }, [setValue, router]);
+
+    const saveAuthToken = (accessToken: string) => {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('access_token', accessToken);
+            console.log('✅ Access token salvo no localStorage');
+        }
+    };
+
+    const clearAuthTokens = () => {
+        if (typeof window !== 'undefined') {
+            localStorage.removeItem('access_token');
+            sessionStorage.removeItem('access_token');
+            localStorage.removeItem('user_email');
+            console.log('🔐 Tokens removidos');
+        }
+    };
 
     const handleGoogleLogin = async () => {
         setSocialLoading(true);
@@ -45,7 +75,11 @@ export const Login: React.FC = () => {
             const { data, error } = await supabase.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
-                    redirectTo: `${window.location.origin}/auth/callback`
+                    redirectTo: `${window.location.origin}/auth/callback`,
+                    queryParams: {
+                        access_type: 'offline',
+                        prompt: 'consent',
+                    }
                 }
             });
 
@@ -58,6 +92,7 @@ export const Login: React.FC = () => {
         } catch (error) {
             console.error('Erro no login com Google:', error);
             setServerError(error instanceof Error ? error.message : 'Erro ao conectar com Google');
+            clearAuthTokens();
         } finally {
             setSocialLoading(false);
         }
@@ -127,13 +162,31 @@ export const Login: React.FC = () => {
 
             console.log('✅ Login bem-sucedido:', authData);
 
-            setTimeout(() => {
-                router.push('/dashboard');
-            }, 1000);
+            if (authData.session?.access_token) {
+                saveAuthToken(authData.session.access_token);
+                console.log('🎯 Access Token salvo');
+                
+                if (authData.user?.email) {
+                    localStorage.setItem('user_email', authData.user.email);
+                }
+            } else {
+                console.warn('⚠️ Access token não encontrado na resposta');
+            }
+
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            router.push('/dashboard');
 
         } catch (error) {
             console.error('❌ Erro no login:', error);
-            setServerError(error instanceof Error ? error.message : 'Erro desconhecido');
+            const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
+            setServerError(errorMessage);
+            
+            clearAuthTokens();
+            
+            if (errorMessage.includes('Failed to fetch') || errorMessage.includes('Network')) {
+                setServerError('Erro de conexão. Verifique sua internet e tente novamente.');
+            }
         } finally {
             setIsLoading(false);
         }
@@ -152,17 +205,25 @@ export const Login: React.FC = () => {
         }
     };
 
-    // ✅ Evita renderização no servidor que causa hydration
+    const clearErrorOnType = () => {
+        if (serverError) {
+            setServerError(null);
+        }
+    };
+
     if (!isClient) {
         return (
-            <div className={styles['login-form-container']}>
-                <Image
-                    src={ListoIcon}
-                    alt="Listo Icon"
-                    width={200}
-                    height={200}
-                />
-                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+            <div className={styles.loginFormContainer}>
+                <div className={styles.logoContainer}>
+                    <Image
+                        src={ListoIcon}
+                        alt="Listo Icon"
+                        width={200}
+                        height={200}
+                        priority
+                    />
+                </div>
+                <Box className={styles.buttonsContainer}>
                     <Image src={CheckBox} width={150} height={150} alt="Icon checkbox loading" />
                 </Box>
             </div>
@@ -174,28 +235,48 @@ export const Login: React.FC = () => {
             <Backdrop
                 sx={{
                     color: '#fff',
-                    zIndex: (theme) => theme.zIndex.drawer + 1
+                    zIndex: (theme) => theme.zIndex.drawer + 1,
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)'
                 }}
                 open={isLoading || socialLoading}
             >
-                <Image src={CheckBox} width={150} height={150} alt="Icon checkbox loading" />
+                <Box sx={{ textAlign: 'center' }}>
+                    <Image src={CheckBox} width={150} height={150} alt="Icon checkbox loading" />
+                    <Typography variant="h6" sx={{ mt: 2, color: 'white' }}>
+                        {isLoading ? 'Entrando...' : 'Conectando...'}
+                    </Typography>
+                </Box>
             </Backdrop>
 
-            <form onSubmit={handleSubmit(onSubmit)} className={styles['login-form-container']}>
-                <Image
-                    src={ListoIcon}
-                    alt="Listo Icon"
-                    width={200}
-                    height={200}
-                />
+            <form onSubmit={handleSubmit(onSubmit)} className={styles.loginFormContainer}>
+                <div className={styles.logoContainer}>
+                    <Image
+                        src={ListoIcon}
+                        alt="Listo Icon"
+                        width={200}
+                        height={200}
+                        priority
+                    />
+                </div>
 
                 {serverError && (
-                    <Typography color="error" variant="body2" sx={{ mb: 2, textAlign: 'center' }}>
+                    <Typography 
+                        color="error" 
+                        variant="body2" 
+                        sx={{ 
+                            mb: 2, 
+                            textAlign: 'center',
+                            padding: '8px 12px',
+                            backgroundColor: 'rgba(211, 47, 47, 0.1)',
+                            borderRadius: '4px',
+                            border: '1px solid rgba(211, 47, 47, 0.3)'
+                        }}
+                    >
                         {serverError}
                     </Typography>
                 )}
 
-                <Box className={styles['login-fields-user']}>
+                <Box className={styles.loginFieldsUser}>
                     <TextField
                         {...register("email", {
                             required: "Email é obrigatório",
@@ -204,19 +285,32 @@ export const Login: React.FC = () => {
                                 message: "Email inválido"
                             }
                         })}
-                        label="Email"
+                        label="Email ou Username"
                         variant="outlined"
                         fullWidth
+                        error={!!errors.email}
+                        helperText={errors.email?.message as string}
+                        onChange={clearErrorOnType}
+                        sx={{ mb: 2 }}
                     />
                     <TextField
-                        {...register("password")}
-                        label="Password"
+                        {...register("password", {
+                            required: "Senha é obrigatória",
+                            minLength: {
+                                value: 6,
+                                message: "Senha deve ter pelo menos 6 caracteres"
+                            }
+                        })}
+                        label="Senha"
                         type="password"
                         variant="outlined"
                         fullWidth
+                        error={!!errors.password}
+                        helperText={errors.password?.message as string}
+                        onChange={clearErrorOnType}
+                        sx={{ mb: 2 }}
                     />
 
-                    {/* ✅ Só renderiza o checkbox quando estiver carregado */}
                     {isCheckboxLoaded && (
                         <FormGroup>
                             <FormControlLabel
@@ -240,6 +334,7 @@ export const Login: React.FC = () => {
                                     />
                                 }
                                 label="Lembrar de mim?"
+                                className={styles.checkboxContainer}
                                 sx={{
                                     '& .MuiFormControlLabel-label': {
                                         fontSize: '14px',
@@ -247,46 +342,87 @@ export const Login: React.FC = () => {
                                         fontWeight: 400,
                                         fontFamily: "'Inter', sans-serif",
                                     },
-                                    marginLeft: '-4px',
                                 }}
                             />
                         </FormGroup>
                     )}
                 </Box>
 
-                <Box sx={{ width: '45%', display: 'flex', gap: '15px', flexDirection: 'column' }}>
+                <Box className={styles.buttonsContainer}>
                     <Button
                         type="submit"
                         variant="contained"
                         color="primary"
-                        className={styles['button-login']}
+                        className={styles.buttonLogin}
                         disabled={isLoading}
                         fullWidth
+                        sx={{
+                            py: 1.5,
+                            fontSize: '1rem',
+                            fontWeight: 600,
+                            mb: 2
+                        }}
                     >
-                        {isLoading ? 'Entrando...' : 'Login'}
+                        {isLoading ? 'ENTRANDO...' : 'ENTRAR'}
                     </Button>
 
                     <Button
                         variant="outlined"
                         color="primary"
-                        className={styles['button-login']}
-                        style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                        className={styles.googleButton}
                         onClick={handleGoogleLogin}
                         disabled={socialLoading}
                         fullWidth
+                        sx={{
+                            py: 1.5,
+                            fontSize: '1rem',
+                            fontWeight: 600,
+                            borderColor: '#4285F4',
+                            color: '#4285F4',
+                            '&:hover': {
+                                borderColor: '#3367D6',
+                                backgroundColor: 'rgba(66, 133, 244, 0.04)'
+                            }
+                        }}
+                        startIcon={<GoogleIcon />}
                     >
-                        <GoogleIcon />
-                        {socialLoading ? 'Conectando...' : 'Continuar com Google'}
+                        {socialLoading ? 'CONECTANDO...' : 'CONTINUAR COM GOOGLE'}
                     </Button>
                 </Box>
 
-                <hr style={{ width: '60%', margin: '20px auto', color: '#a1d5f3' }} />
+                <hr className={styles.horizontalLine} />
 
-                <Link href="/register" passHref style={{ width: '45%' }}>
-                    <Button variant="outlined" color="primary" fullWidth>
-                        Cadastro
-                    </Button>
-                </Link>
+                <Box sx={{ textAlign: 'center', mt: 2 }}>
+                    <Typography variant="body2" sx={{ mb: 2, color: '#6B7280' }}>
+                        Não tem uma conta?
+                    </Typography>
+                    <Link href="/register" passHref>
+                        <Button 
+                            variant="outlined" 
+                            color="secondary"
+                            fullWidth
+                            sx={{
+                                py: 1.5,
+                                fontSize: '1rem',
+                                fontWeight: 600
+                            }}
+                        >
+                            CRIAR CONTA
+                        </Button>
+                    </Link>
+                </Box>
+
+                <Box sx={{ textAlign: 'center', mt: 2 }}>
+                    <Link href="/forgot-password" passHref>
+                        <Button 
+                            variant="text" 
+                            color="primary"
+                            size="small"
+                        >
+                            Esqueci minha senha
+                        </Button>
+                    </Link>
+                </Box>
             </form>
         </>
     );

@@ -1,0 +1,43 @@
+.dialogContainer {
+  padding: 8px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.formContainer {
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 600px;
+}
+
+.buttonsContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 16px;
+}
+
+.title {
+  padding: 10px;
+  text-align: center;
+}
+
+.formControl {
+  width: 100%;
+}
+
+.textField {
+  width: 100%;
+}
+
+.button {
+  min-width: 100px;
+}
+
+.closeButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

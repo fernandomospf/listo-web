@@ -7,28 +7,28 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-     --background: 'linear-gradient(135deg, #F8FAFC 0%, #E2E8F0 100%)';
+    --background: 'linear-gradient(135deg, #F8FAFC 0%, #E2E8F0 100%)';
     --foreground: #ededed;
   }
 }
 
-/* 🔧 ESTILOS PARA O FOOTER FIXO NO FINAL */
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
   padding: 0;
+  font-family: var(--font-poppins) !important;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-poppins) !important;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
 
-/* Container principal do layout */
 .layout-container {
   display: flex;
   flex-direction: column;
@@ -36,7 +36,6 @@ body {
   width: 100%;
 }
 
-/* Conteúdo principal - ocupa todo o espaço disponível */
 .main-content {
   flex: 1;
   display: flex;
@@ -44,7 +43,6 @@ body {
   width: 100%;
 }
 
-/* Footer - sempre no final */
 .footer {
   background-color: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(10px);
@@ -56,14 +54,12 @@ body {
   width: 100%;
 }
 
-/* 🎨 Estilos específicos para o footer */
 .footer-content {
   max-width: 1200px;
   margin: 0 auto;
   font-size: 0.9rem;
 }
 
-/* 📱 Responsividade */
 @media (max-width: 768px) {
   .footer {
     padding: 1rem;
@@ -71,12 +67,10 @@ body {
   }
 }
 
-/* 🎯 Garantir que todos os elementos respeitem o box model */
 * {
   box-sizing: border-box;
 }
 
-/* Estilos adicionais para um footer mais bonito */
 .footer {
   background: linear-gradient(135deg, rgba(248, 250, 252, 0.9) 0%, rgba(226, 232, 240, 0.9) 100%);
   backdrop-filter: blur(12px);
@@ -88,6 +82,7 @@ body {
   width: 100%;
   font-weight: 500;
   box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.05);
+  height: 10px;
 }
 
 .footer-content {
@@ -98,4 +93,5 @@ body {
   justify-content: center;
   align-items: center;
   gap: 0.5rem;
+  height: .5px;
 }

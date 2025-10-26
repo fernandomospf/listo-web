@@ -50,7 +50,6 @@ function Header() {
     const menuItems = [
         { path: '/dashboard', label: 'Dashboard' },
         { path: '/completed', label: 'Concluídas' },
-        { path: '/excluded', label: 'Excluidas' },
     ];
 
 

@@ -1,25 +1,133 @@
-.login-form-container {
+.loginFormContainer {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 1rem;
     background-color: rgba(255, 255, 255, 0.753);
     color: black;
     width: 580px;
     height: 720px;
     border-radius: 10px;
-    gap: 20px;
+    padding: 40px 0;
+    gap: 30px;
+    padding-top: 10px;
 }
 
-.login-fields-user {
+.logoContainer {
+    margin-bottom: 20px;
+}
+
+.loginFieldsUser {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 25px;
     width: 80%;
 }
 
-.button-login {
-    width: 35%;
-    height: 40px;
+.buttonsContainer {
+    width: 45%;
+    display: flex;
+    gap: 15px;
+    flex-direction: column;
+}
+
+.buttonLogin {
+    height: 45px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.googleButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 45px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.horizontalLine {
+    width: 60%;
+    margin: 10px auto;
+    border: none;
+    border-top: 1px solid #a1d5f3;
+}
+
+.registerLink {
+    width: 45%;
+    text-decoration: none;
+}
+
+.registerButton {
+    height: 45px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.checkboxContainer {
+    margin-left: -4px;
+    margin-top: -10px;
+}
+
+.checkboxLabel {
+    font-size: 14px;
+    color: #374151;
+    font-weight: 400;
+    font-family: 'Inter', sans-serif;
+}
+
+@media (max-width: 768px) {
+    .loginFormContainer {
+        width: 400px;
+        height: auto;
+        min-height: 600px;
+        padding: 30px 20px;
+        margin: 20px;
+        gap: 25px;
+    }
+
+    .buttonsContainer {
+        width: 80%;
+    }
+
+    .registerLink {
+        width: 80%;
+    }
+
+    .loginFieldsUser {
+        width: 90%;
+    }
+
+    .horizontalLine {
+        width: 80%;
+    }
+}
+
+@media (max-width: 480px) {
+    .loginFormContainer {
+        width: 95%;
+        padding: 20px 15px;
+        gap: 20px;
+    }
+
+    .buttonsContainer {
+        width: 90%;
+    }
+
+    .registerLink {
+        width: 90%;
+    }
+
+    .loginFieldsUser {
+        width: 95%;
+        gap: 20px;
+    }
+
+    .horizontalLine {
+        width: 90%;
+    }
 }

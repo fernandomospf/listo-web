@@ -1,0 +1,57 @@
+.dialogContainer {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.action-close {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.formContainer {
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 600px;
+}
+
+.buttonsContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 16px;
+}
+
+.title {
+  padding: 10px;
+  text-align: center;
+  font-family: var(--font-poppins) !important;
+}
+
+.formControl {
+  width: 100%;
+
+}
+
+.textField {
+  width: 100%;
+}
+
+.button {
+  min-width: 100px;
+}
+
+.closeButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.row-container {
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
+}
