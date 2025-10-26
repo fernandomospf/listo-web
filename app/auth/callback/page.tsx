@@ -1,61 +1,83 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { Box, CircularProgress, Typography } from '@mui/material';
 
 export default function AuthCallback() {
     const router = useRouter();
+    const searchParams = useSearchParams();
 
     useEffect(() => {
         const handleAuthCallback = async () => {
             try {
+                console.log('🔄 Processando callback OAuth...');
+
                 const { data: { session }, error } = await supabase.auth.getSession();
-                
+
                 if (error) {
+                    console.error('❌ Erro ao obter sessão:', error);
                     throw error;
                 }
 
-                if (session) {
-                    if (session.access_token) {
-                        localStorage.setItem('access_token', session.access_token);
-                    } else {
-                        console.warn('⚠️ Access token não encontrado na sessão');
+                if (!session) {
+                    const { data: hashData, error: hashError } = await supabase.auth.getUser();
+
+                    if (hashError) {
+                        console.error('❌ Erro ao processar hash:', hashError);
+                        throw hashError;
                     }
 
-                    if (session.user?.email) {
-                        localStorage.setItem('user_email', session.user.email);
+                    if (!hashData.user) {
+                        throw new Error('Usuário não autenticado');
                     }
-
-                    router.push('/dashboard');
-                } else {
-                    router.push('/');
                 }
+
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                const { data: { session: currentSession } } = await supabase.auth.getSession();
+
+                if (currentSession?.access_token) {
+                    localStorage.setItem('access_token', currentSession.access_token);
+                    console.log('✅ Access token salvo no localStorage');
+                }
+
+                if (currentSession?.user?.email) {
+                    localStorage.setItem('user_email', currentSession.user.email);
+                    console.log('✅ Email do usuário salvo');
+                }
+
+                console.log('✅ Login OAuth bem-sucedido, redirecionando...');
+                router.push('/dashboard');
+
             } catch (error) {
-                console.error('Erro no callback:', error);
-                
+                console.error('❌ Erro no callback OAuth:', error);
+
                 localStorage.removeItem('access_token');
                 localStorage.removeItem('user_email');
-                
-                router.push('/login?error=auth_failed');
+
+                router.push('/login?error=oauth_failed');
             }
         };
 
         handleAuthCallback();
-    }, [router]);
+    }, [router, searchParams]);
 
     return (
-        <Box sx={{ 
-            display: 'flex', 
-            flexDirection: 'column', 
-            alignItems: 'center', 
-            justifyContent: 'center', 
-            minHeight: '100vh' 
+        <Box sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            minHeight: '100vh'
         }}>
-            <CircularProgress />
-            <Typography variant="h6" sx={{ mt: 2 }}>
-                Processando login...
+            <CircularProgress size={60} />
+            <Typography variant="h6" sx={{ mt: 3 }}>
+                Processando autenticação...
+            </Typography>
+            <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
+                Aguarde enquanto conectamos com sua conta Google
             </Typography>
         </Box>
     );

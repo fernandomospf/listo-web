@@ -10,12 +10,13 @@ import ListoIcon from '../../../public/listo-icon.png';
 import Image from 'next/image';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import CheckBox from '@/public/check-box.gif';
 
 export const Login: React.FC = () => {
     const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm();
     const router = useRouter();
+    const searchParams = useSearchParams();
     const [isLoading, setIsLoading] = useState(false);
     const [socialLoading, setSocialLoading] = useState(false);
     const [serverError, setServerError] = useState<string | null>(null);
@@ -25,6 +26,11 @@ export const Login: React.FC = () => {
 
     useEffect(() => {
         setIsClient(true);
+
+        const error = searchParams.get('error');
+        if (error === 'oauth_failed') {
+            setServerError('Falha na autenticação com Google. Tente novamente.');
+        }
 
         const checkExistingAuth = async () => {
             try {
@@ -47,9 +53,9 @@ export const Login: React.FC = () => {
                 setValue('email', savedEmail);
                 setRememberMe(true);
             }
-            setIsCheckboxLoaded(true); 
+            setIsCheckboxLoaded(true);
         }
-    }, [setValue, router]);
+    }, [setValue, router, searchParams]);
 
     const saveAuthToken = (accessToken: string) => {
         if (typeof window !== 'undefined') {
@@ -72,6 +78,8 @@ export const Login: React.FC = () => {
         setServerError(null);
 
         try {
+            console.log('🔄 Iniciando login com Google...');
+
             const { data, error } = await supabase.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
@@ -84,14 +92,17 @@ export const Login: React.FC = () => {
             });
 
             if (error) {
+                console.error('❌ Erro do Supabase:', error);
                 throw new Error(error.message);
             }
 
-            console.log('Login com Google iniciado:', data);
+            console.log('✅ Fluxo OAuth iniciado com sucesso:', data);
+
 
         } catch (error) {
-            console.error('Erro no login com Google:', error);
-            setServerError(error instanceof Error ? error.message : 'Erro ao conectar com Google');
+            console.error('❌ Erro no login com Google:', error);
+            const errorMessage = error instanceof Error ? error.message : 'Erro ao conectar com Google';
+            setServerError(errorMessage);
             clearAuthTokens();
         } finally {
             setSocialLoading(false);
@@ -165,7 +176,7 @@ export const Login: React.FC = () => {
             if (authData.session?.access_token) {
                 saveAuthToken(authData.session.access_token);
                 console.log('🎯 Access Token salvo');
-                
+
                 if (authData.user?.email) {
                     localStorage.setItem('user_email', authData.user.email);
                 }
@@ -181,9 +192,9 @@ export const Login: React.FC = () => {
             console.error('❌ Erro no login:', error);
             const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
             setServerError(errorMessage);
-            
+
             clearAuthTokens();
-            
+
             if (errorMessage.includes('Failed to fetch') || errorMessage.includes('Network')) {
                 setServerError('Erro de conexão. Verifique sua internet e tente novamente.');
             }
@@ -243,7 +254,7 @@ export const Login: React.FC = () => {
                 <Box sx={{ textAlign: 'center' }}>
                     <Image src={CheckBox} width={150} height={150} alt="Icon checkbox loading" />
                     <Typography variant="h6" sx={{ mt: 2, color: 'white' }}>
-                        {isLoading ? 'Entrando...' : 'Conectando...'}
+                        {isLoading ? 'Entrando...' : 'Conectando com Google...'}
                     </Typography>
                 </Box>
             </Backdrop>
@@ -260,11 +271,11 @@ export const Login: React.FC = () => {
                 </div>
 
                 {serverError && (
-                    <Typography 
-                        color="error" 
-                        variant="body2" 
-                        sx={{ 
-                            mb: 2, 
+                    <Typography
+                        color="error"
+                        variant="body2"
+                        sx={{
+                            mb: 2,
                             textAlign: 'center',
                             padding: '8px 12px',
                             backgroundColor: 'rgba(211, 47, 47, 0.1)',
@@ -397,8 +408,8 @@ export const Login: React.FC = () => {
                         Não tem uma conta?
                     </Typography>
                     <Link href="/register" passHref>
-                        <Button 
-                            variant="outlined" 
+                        <Button
+                            variant="outlined"
                             color="secondary"
                             fullWidth
                             sx={{
@@ -414,8 +425,8 @@ export const Login: React.FC = () => {
 
                 <Box sx={{ textAlign: 'center', mt: 2 }}>
                     <Link href="/forgot-password" passHref>
-                        <Button 
-                            variant="text" 
+                        <Button
+                            variant="text"
                             color="primary"
                             size="small"
                         >
