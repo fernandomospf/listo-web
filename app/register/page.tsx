@@ -34,49 +34,50 @@ export default function Register() {
     });
     const router = useRouter();
 
-    const onSubmit = async (data: RegisterSchema) => {
-        setIsLoading(true);
-        try {
-            const response = await fetch('http://localhost:8080/auth/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    username: data.username,
-                    name: data.name,
-                    email: data.email,
-                    password: data.password
-                })
-            });
+        const onSubmit = async (data: RegisterSchema) => {
+            setIsLoading(true);
+            const BASE_URL = process.env.NEXT_PUBLIC_API_URL
+            try {
+                const response = await fetch(`${BASE_URL}/auth/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: data.username,
+                        name: data.name,
+                        email: data.email,
+                        password: data.password
+                    })
+                });
 
-            if (!response.ok) {
-                const errorData = await response.json();
+                if (!response.ok) {
+                    const errorData = await response.json();
 
-                let errorMessage = 'Erro no registro';
+                    let errorMessage = 'Erro no registro';
 
-                if (typeof errorData.message === 'string') {
-                    errorMessage = errorData.message;
-                } else if (Array.isArray(errorData.message)) {
-                    errorMessage = errorData.message.join(', ');
+                    if (typeof errorData.message === 'string') {
+                        errorMessage = errorData.message;
+                    } else if (Array.isArray(errorData.message)) {
+                        errorMessage = errorData.message.join(', ');
+                    }
+
+                    throw new Error(errorMessage);
                 }
 
-                throw new Error(errorMessage);
+                const result = await response.json();
+                setIsFinish(true)
+                toast('Cadastro realizado com sucesso!!');
+                setTimeout(() => {
+                    router.push('/');
+                }, 2000)
+            } catch (error) {
+                console.error('Erro no registro:', error);
+                toast.error(error instanceof Error ? error.message : 'Erro no cadastro');
+            } finally {
+                setIsLoading(false);
             }
-
-            const result = await response.json();
-            setIsFinish(true)
-            toast('Cadastro realizado com sucesso!!');
-            setTimeout(() => {
-                router.push('/');
-            }, 2000)
-        } catch (error) {
-            console.error('Erro no registro:', error);
-            toast.error(error instanceof Error ? error.message : 'Erro no cadastro');
-        } finally {
-            setIsLoading(false);
-        }
-    };
+        };
 
     return (
         <Box className={styles.formRegister}>
