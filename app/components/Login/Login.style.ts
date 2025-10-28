@@ -3,45 +3,69 @@ import { Button, ButtonProps, styled, TextField, TextFieldProps } from '@mui/mat
 const InputLogin = styled(TextField) <TextFieldProps>`
   width: 100%;
   
-  && .MuiOutlinedInput-root {
+  & .MuiOutlinedInput-root {
     background-color: transparent !important;
+    
+    & .MuiOutlinedInput-notchedOutline {
+      border: 1px solid #1F2937 !important;
+      background-color: transparent !important;
+    }
+    
+    &:hover .MuiOutlinedInput-notchedOutline {
+      border-color: #1F2937 !important;
+      background-color: transparent !important;
+    }
+    
+    &.Mui-focused .MuiOutlinedInput-notchedOutline {
+      border-color: #1F2937 !important; 
+      border-width: 2px !important;
+      background-color: transparent !important;
+    }
+    
+    & .MuiInputBase-input {
+      color: #1F2937 !important;
+      background-color: transparent !important;
+      font-family: var(--font-poppins) !important;
+      
+      &:-webkit-autofill,
+      &:-webkit-autofill:hover,
+      &:-webkit-autofill:focus,
+      &:-webkit-autofill:active {
+        -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
+        -webkit-text-fill-color: #1F2937 !important;
+        background-color: transparent !important;
+        background-clip: content-box !important;
+      }
+      
+      /* Para inputs de senha */
+      &[type="password"]:-webkit-autofill {
+        -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
+        -webkit-text-fill-color: #1F2937 !important;
+      }
+    }
   }
   
-  && .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
-    border: 1px solid #1F2937 !important;
-    background-color: transparent !important;
-  }
-  
-  && .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
-    border-color: #1F2937 !important;
-    background-color: transparent !important;
-  }
-  
-  && .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-    border-color: #1F2937 !important;
-    border-width: 2px !important;
-    background-color: transparent !important;
-  }
-  
-  && .MuiOutlinedInput-input {
+  & .MuiInputLabel-root {
     color: #1F2937 !important;
     background-color: transparent !important;
     font-family: var(--font-poppins) !important;
+    
+    &.Mui-focused {
+      color: #1F2937 !important;
+      background-color: transparent !important;
+    }
+    
+    &.MuiFormLabel-filled {
+      background-color: transparent !important;
+    }
   }
   
-  && .MuiInputLabel-root {
-    color: #1F2937 !important;
-    background-color: transparent !important;
-    font-family: var(--font-poppins) !important;
-  }
-  
-  && .MuiFormHelperText-root {
+  & .MuiFormHelperText-root {
     color: #1F2937 !important;
     background-color: transparent !important;
     font-family: var(--font-poppins) !important;
   }
 `;
-
 const LoginButton = styled(Button) <ButtonProps>`
     color: #f7fafdff;
     font-size: '1rem';
