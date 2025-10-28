@@ -4,49 +4,46 @@ const InputLogin = styled(TextField) <TextFieldProps>`
   width: 100%;
   
   & .MuiOutlinedInput-root {
-    background-color: transparent;
+    background-color: transparent !important;
     
     & .MuiOutlinedInput-notchedOutline {
-      border: 1px solid #1F2937;
-      background-color: transparent;
+      border: 1px solid #1F2937 !important;
+      background-color: transparent !important;
     }
     
     &:hover .MuiOutlinedInput-notchedOutline {
-      border-color: #1F2937;
-      background-color: transparent;
+      border-color: #1F2937 !important;
+      background-color: transparent !important;
     }
     
     &.Mui-focused .MuiOutlinedInput-notchedOutline {
-      border-color: #1F2937; 
-      border-width: 2px;
-      background-color: transparent;
+      border-color: #1F2937 !important; 
+      border-width: 2px !important;
+      background-color: transparent !important;
     }
     
     & .MuiInputBase-input {
-      color: #1F2937;
-      background-color: transparent;
-      
-      &::placeholder {
-        color: #6B7280;
-      }
+      color: #1F2937 !important;
+      background-color: transparent !important;
     }
   }
   
   & .MuiInputLabel-root {
-    color: #1F2937;
-    background-color: transparent;
+    color: #1F2937 !important;
+    background-color: transparent !important;
     
     &.Mui-focused {
-      color: #1F2937;
-      background-color: transparent;
+      color: #1F2937 !important;
+      background-color: transparent !important;
     }
   }
   
   & .MuiFormHelperText-root {
-    color: #1F2937;
-    background-color: transparent;
+    color: #1F2937 !important;
+    background-color: transparent !important;
   }
 `;
+
 const LoginButton = styled(Button) <ButtonProps>`
     color: #f7fafdff;
     font-size: '1rem';

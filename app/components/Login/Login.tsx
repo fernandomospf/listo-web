@@ -329,37 +329,32 @@ export const Login: React.FC = () => {
                                             <Checkbox
                                                 checked={rememberMe}
                                                 onChange={handleRememberMeChange}
-                                                className={isMounted ? styles['rememberMe'] : ''}
-                                                sx={
-                                                    isMounted ? undefined : {
-                                                        padding: '12px',
-                                                        '& .MuiSvgIcon-root': {
-                                                            fontSize: '16px',
-                                                            borderRadius: '4px',
-                                                        },
+                                                sx={{
+                                                    '& .MuiSvgIcon-root': {
+                                                        fontSize: '22px',
+                                                        borderRadius: '4px',
+                                                    },
+                                                    color: '#1F2937',
+                                                    '&.Mui-checked': {
                                                         color: '#1F2937',
-                                                        '&.Mui-checked': {
-                                                            color: '#3B82F6',
-                                                        },
-                                                    }
-                                                }
+                                                    },
+                                                    '&:hover': {
+                                                        backgroundColor: 'rgba(59, 130, 246, 0.04)',
+                                                    },
+                                                }}
                                             />
                                         }
                                         label="Lembrar de mim?"
-                                        className={isMounted ? styles.checkboxContainer : ''}
-                                        sx={
-                                            isMounted ? undefined : {
-                                                '& .MuiFormControlLabel-label': {
-                                                    fontSize: '16px',
-                                                    color: '#1F2937',
-                                                    fontWeight: 400,
-                                                    fontFamily: "'Inter', sans-serif",
-                                                },
-                                            }
-                                        }
+                                        sx={{
+                                            '& .MuiFormControlLabel-label': {
+                                                fontSize: '16px',
+                                                color: '#1F2937',
+                                                fontWeight: 400,
+                                                fontFamily: "'Inter', sans-serif",
+                                            },
+                                        }}
                                     />
                                 </FormGroup>
-
                                 <hr className={styles.horizontalLine} />
                                 <Box className={styles['button-container']}>
                                     <LoginButton
