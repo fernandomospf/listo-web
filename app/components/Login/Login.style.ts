@@ -141,5 +141,6 @@ const LoginButton = styled(Button) <ButtonProps>`
 
 export {
   InputLogin,
-  LoginButton
+  LoginButton,
+  InputPassword
 }

@@ -12,7 +12,7 @@ import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 import { useRouter, useSearchParams } from 'next/navigation';
 import CoverPageLogin from '@/public/coverPageLogin.svg';
-import { InputLogin, LoginButton } from './Login.style';
+import { InputLogin, InputPassword, LoginButton } from './Login.style';
 
 export const Login: React.FC = () => {
     const { handleSubmit, watch, setValue, formState: { errors }, control } = useForm({
@@ -326,9 +326,10 @@ export const Login: React.FC = () => {
                                         }
                                     }}
                                     render={({ field }) => (
-                                        <InputLogin
+                                        <InputPassword
                                             {...field}
                                             label="Senha"
+                                            autoComplete='off'
                                             type="password"
                                             variant="outlined"
                                             error={!!errors.password}
