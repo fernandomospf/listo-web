@@ -37,6 +37,7 @@
     gap: 30px;
     margin: 20px auto;
     transition: all 0.3s ease;
+    font-family: var(--font-poppins) !important;
 }
 
 .brand-container {
@@ -137,6 +138,7 @@
     width: 100%;
     padding-right: 25px;
     color: #1F2937 !important;
+
     &:hover {
         text-decoration: underline;
     }

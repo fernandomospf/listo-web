@@ -350,7 +350,7 @@ export const Login: React.FC = () => {
                                                 fontSize: '16px',
                                                 color: '#1F2937',
                                                 fontWeight: 400,
-                                                fontFamily: "'Inter', sans-serif",
+                                                fontFamily: 'var(--font-poppins) !important',
                                             },
                                         }}
                                     />
