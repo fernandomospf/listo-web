@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import styles from './Login.module.css';
-import { Button, TextField, Typography, Backdrop, Checkbox, FormGroup, FormControlLabel } from '@mui/material';
+import { Typography, Checkbox, FormGroup, FormControlLabel } from '@mui/material';
 import { Box } from '@mui/system';
 import GoogleIcon from '@mui/icons-material/Google';
 import ListoIcon from '../../../public/listo-icon.png';
@@ -11,22 +11,25 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 import { useRouter, useSearchParams } from 'next/navigation';
-import CheckBox from '@/public/check-box.gif';
+import CoverPageLogin from '@/public/coverPageLogin.svg';
+import { InputLogin, LoginButton } from './Login.style';
 
 export const Login: React.FC = () => {
-    const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm();
+    const { handleSubmit, watch, setValue, formState: { errors }, control } = useForm({
+        defaultValues: {
+            email: '',
+            password: ''
+        }
+    });
     const router = useRouter();
     const searchParams = useSearchParams();
     const [isLoading, setIsLoading] = useState(false);
     const [socialLoading, setSocialLoading] = useState(false);
     const [serverError, setServerError] = useState<string | null>(null);
-    const [isClient, setIsClient] = useState(false);
     const [rememberMe, setRememberMe] = useState(false);
     const [isCheckboxLoaded, setIsCheckboxLoaded] = useState(false);
 
     useEffect(() => {
-        setIsClient(true);
-
         const error = searchParams.get('error');
         if (error === 'oauth_failed') {
             setServerError('Falha na autenticação com Google. Tente novamente.');
@@ -222,219 +225,157 @@ export const Login: React.FC = () => {
         }
     };
 
-    if (!isClient) {
-        return (
-            <div className={styles.loginFormContainer}>
-                <div className={styles.logoContainer}>
-                    <Image
-                        src={ListoIcon}
-                        alt="Listo Icon"
-                        width={200}
-                        height={200}
-                        priority
-                    />
-                </div>
-                <Box className={styles.buttonsContainer}>
-                    <Image src={CheckBox} width={150} height={150} alt="Icon checkbox loading" />
-                </Box>
-            </div>
-        );
-    }
-
     return (
-        <>
-            <Backdrop
-                sx={{
-                    color: '#fff',
-                    zIndex: (theme) => theme.zIndex.drawer + 1,
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)'
-                }}
-                open={isLoading || socialLoading}
-            >
-                <Box sx={{ textAlign: 'center' }}>
-                    <Image src={CheckBox} width={150} height={150} alt="Icon checkbox loading" />
-                    <Typography variant="h6" sx={{ mt: 2, color: 'white' }}>
-                        {isLoading ? 'Entrando...' : 'Conectando com Google...'}
-                    </Typography>
-                </Box>
-            </Backdrop>
-
-            <form onSubmit={handleSubmit(onSubmit)} className={styles.loginFormContainer}>
-                <div className={styles.logoContainer}>
-                    <Image
-                        src={ListoIcon}
-                        alt="Listo Icon"
-                        width={200}
-                        height={200}
-                        priority
-                    />
-                </div>
-
-                {serverError && (
-                    <Typography
-                        color="error"
-                        variant="body2"
-                        sx={{
-                            mb: 2,
-                            textAlign: 'center',
-                            padding: '8px 12px',
-                            backgroundColor: 'rgba(211, 47, 47, 0.1)',
-                            borderRadius: '4px',
-                            border: '1px solid rgba(211, 47, 47, 0.3)'
-                        }}
-                    >
-                        {serverError}
-                    </Typography>
-                )}
-
-                <Box className={styles.loginFieldsUser}>
-                    <TextField
-                        {...register("email", {
-                            required: "Email é obrigatório",
-                            pattern: {
-                                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                                message: "Email inválido"
-                            }
-                        })}
-                        label="Email ou Username"
-                        variant="outlined"
-                        fullWidth
-                        error={!!errors.email}
-                        helperText={errors.email?.message as string}
-                        onChange={clearErrorOnType}
-                        sx={{ mb: 2 }}
-                    />
-                    <TextField
-                        {...register("password", {
-                            required: "Senha é obrigatória",
-                            minLength: {
-                                value: 6,
-                                message: "Senha deve ter pelo menos 6 caracteres"
-                            }
-                        })}
-                        label="Senha"
-                        type="password"
-                        variant="outlined"
-                        fullWidth
-                        error={!!errors.password}
-                        helperText={errors.password?.message as string}
-                        onChange={clearErrorOnType}
-                        sx={{ mb: 2 }}
-                    />
-
-                    {isCheckboxLoaded && (
-                        <FormGroup>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={rememberMe}
-                                        onChange={handleRememberMeChange}
+        <Box className={styles['main-container']}>
+            <Box className={styles['image-container']}>
+                <Image
+                    src={CoverPageLogin}
+                    width={1000}
+                    height={1000}
+                    alt="Cover Page Login"
+                    style={{ userSelect: 'none' }}
+                />
+            </Box>
+            <Box className={styles['login-container']}>
+                <Box className={styles['modal-login']}>
+                    <Box className={styles['brand-container']}>
+                        <Image
+                            src={ListoIcon}
+                            width={150}
+                            height={150}
+                            alt='Listo image brand'
+                        />
+                    </Box>
+                    <Box className={styles['box-login']}>
+                        <form
+                            onSubmit={handleSubmit(onSubmit)}
+                            className={styles['form-login']}
+                        >
+                            <Controller
+                                name="email"
+                                control={control}
+                                rules={{
+                                    required: "Email é obrigatório",
+                                    pattern: {
+                                        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                        message: "Email inválido"
+                                    }
+                                }}
+                                render={({ field }) => (
+                                    <InputLogin
+                                        {...field}
+                                        label="Email"
+                                        variant="outlined"
+                                        error={!!errors.email}
+                                        helperText={errors.email?.message as string}
+                                        onChange={(e) => {
+                                            field.onChange(e);
+                                            clearErrorOnType();
+                                        }}
+                                    />
+                                )}
+                            />
+                            <Controller
+                                name="password"
+                                control={control}
+                                rules={{
+                                    required: "Senha é obrigatória",
+                                    minLength: {
+                                        value: 6,
+                                        message: "Senha deve ter pelo menos 6 caracteres"
+                                    }
+                                }}
+                                render={({ field }) => (
+                                    <InputLogin
+                                        {...field}
+                                        label="Senha"
+                                        type="password"
+                                        variant="outlined"
+                                        error={!!errors.password}
+                                        helperText={errors.password?.message as string}
+                                        onChange={(e) => {
+                                            field.onChange(e);
+                                            clearErrorOnType();
+                                        }}
+                                    />
+                                )}
+                            />
+                            {/* TODO: Implementar o esqueceu sua senha */}
+                            {/* <Typography
+                                className={styles['forget-password']}
+                                variant="body1"
+                            >
+                                Esqueceu sua senha?{' '}
+                                <Link
+                                    href="/forget-password"
+                                    className={styles['forget-password-link']}
+                                >
+                                    Clique aqui
+                                </Link>
+                            </Typography> */}
+                            {isCheckboxLoaded && (
+                                <FormGroup>
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                checked={rememberMe}
+                                                onChange={handleRememberMeChange}
+                                                className={styles['rememberMe']}
+                                                sx={{
+                                                    padding: '12px',
+                                                    '& .MuiSvgIcon-root': {
+                                                        fontSize: '16px',
+                                                        color: '#1F2937',
+                                                        borderRadius: '4px',
+                                                    },
+                                                }}
+                                            />
+                                        }
+                                        label="Lembrar de mim?"
+                                        className={styles.checkboxContainer}
                                         sx={{
-                                            color: '#CBD5E1',
-                                            '&.Mui-checked': {
-                                                color: '#3B82F6',
-                                            },
-                                            '&:hover': {
-                                                backgroundColor: 'rgba(59, 130, 246, 0.04)',
-                                            },
-                                            '& .MuiSvgIcon-root': {
-                                                fontSize: 30,
-                                                borderRadius: '4px',
+                                            '& .MuiFormControlLabel-label': {
+                                                fontSize: '16px',
+                                                color: '#1F2937',
+                                                fontWeight: 400,
+                                                fontFamily: "'Inter', sans-serif",
                                             },
                                         }}
                                     />
-                                }
-                                label="Lembrar de mim?"
-                                className={styles.checkboxContainer}
-                                sx={{
-                                    '& .MuiFormControlLabel-label': {
-                                        fontSize: '14px',
-                                        color: '#374151',
-                                        fontWeight: 400,
-                                        fontFamily: "'Inter', sans-serif",
-                                    },
-                                }}
-                            />
-                        </FormGroup>
-                    )}
+                                </FormGroup>
+                            )}
+                            <hr className={styles.horizontalLine} />
+                            <Box className={styles['button-container']}>
+                                <LoginButton
+                                    type="submit"
+                                    variant="contained"
+                                    color="primary"
+                                    className={styles.buttonLogin}
+                                    disabled={isLoading}
+                                >
+                                    {isLoading ? 'ENTRANDO...' : 'ENTRAR'}
+                                </LoginButton>
+
+                                <LoginButton
+                                    variant="contained"
+                                    color="primary"
+                                    className={styles.googleButton}
+                                    onClick={handleGoogleLogin}
+                                    disabled={socialLoading}
+                                    startIcon={<GoogleIcon />}
+                                >
+                                    {socialLoading ? 'CONECTANDO...' : 'CONTINUAR COM GOOGLE'}
+                                </LoginButton>
+                            </Box>
+                        </form>
+                    </Box>
+                    <Box className={styles['register-link']}>
+                        <Link href="/register" passHref>
+                            Registre-se
+                        </Link>
+                    </Box>
                 </Box>
-
-                <Box className={styles.buttonsContainer}>
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        color="primary"
-                        className={styles.buttonLogin}
-                        disabled={isLoading}
-                        fullWidth
-                        sx={{
-                            py: 1.5,
-                            fontSize: '1rem',
-                            fontWeight: 600,
-                            mb: 2
-                        }}
-                    >
-                        {isLoading ? 'ENTRANDO...' : 'ENTRAR'}
-                    </Button>
-
-                    <Button
-                        variant="outlined"
-                        color="primary"
-                        className={styles.googleButton}
-                        onClick={handleGoogleLogin}
-                        disabled={socialLoading}
-                        fullWidth
-                        sx={{
-                            py: 1.5,
-                            fontSize: '1rem',
-                            fontWeight: 600,
-                            borderColor: '#4285F4',
-                            color: '#4285F4',
-                            '&:hover': {
-                                borderColor: '#3367D6',
-                                backgroundColor: 'rgba(66, 133, 244, 0.04)'
-                            }
-                        }}
-                        startIcon={<GoogleIcon />}
-                    >
-                        {socialLoading ? 'CONECTANDO...' : 'CONTINUAR COM GOOGLE'}
-                    </Button>
-                </Box>
-
-                <hr className={styles.horizontalLine} />
-
-                <Box sx={{ textAlign: 'center', mt: 2 }}>
-                    <Typography variant="body2" sx={{ mb: 2, color: '#6B7280' }}>
-                        Não tem uma conta?
-                    </Typography>
-                    <Link href="/register" passHref>
-                        <Button
-                            variant="outlined"
-                            color="secondary"
-                            fullWidth
-                            sx={{
-                                py: 1.5,
-                                fontSize: '1rem',
-                                fontWeight: 600
-                            }}
-                        >
-                            CRIAR CONTA
-                        </Button>
-                    </Link>
-                </Box>
-
-                <Box sx={{ textAlign: 'center', mt: 2 }}>
-                    <Link href="/forgot-password" passHref>
-                        <Button
-                            variant="text"
-                            color="primary"
-                            size="small"
-                        >
-                            Esqueci minha senha
-                        </Button>
-                    </Link>
-                </Box>
-            </form>
-        </>
+            </Box>
+        </Box>
     );
 };

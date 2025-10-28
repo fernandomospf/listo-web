@@ -46,7 +46,7 @@ export default function RootLayout({
           </main>
           <footer className="footer">
             <div className="footer-content">
-              Fernando Mós | Sênior developer
+              Listo | Seu app de gerenciamento gratuito
             </div>
           </footer>
         </div>
