@@ -2,65 +2,43 @@ import { Button, ButtonProps, styled, TextField, TextFieldProps } from '@mui/mat
 
 const InputLogin = styled(TextField) <TextFieldProps>`
   width: 100%;
-  font-family: var(--font-poppins) !important;
   
-  & .MuiOutlinedInput-root {
+  && .MuiOutlinedInput-root {
     background-color: transparent !important;
-    font-family: var(--font-poppins) !important;
-    
-    & .MuiOutlinedInput-notchedOutline {
-      border: 1px solid #1F2937 !important;
-      background-color: transparent !important;
-    }
-    
-    &:hover .MuiOutlinedInput-notchedOutline {
-      border-color: #1F2937 !important;
-      background-color: transparent !important;
-    }
-    
-    &.Mui-focused .MuiOutlinedInput-notchedOutline {
-      border-color: #1F2937 !important; 
-      border-width: 2px !important;
-      background-color: transparent !important;
-    }
-    
-    & .MuiInputBase-input {
-      color: #1F2937 !important;
-      background-color: transparent !important;
-      font-family: var(--font-poppins) !important;
-      font-weight: 400;
-      
-      &[type="password"] {
-        color: #1F2937 !important;
-        background-color: transparent !important;
-        -webkit-text-fill-color: #1F2937 !important;
-        font-family: var(--font-poppins) !important;
-      }
-    }
-    
-    & .MuiIconButton-root {
-      color: #1F2937 !important;
-    }
   }
   
-  & .MuiInputLabel-root {
+  && .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
+    border: 1px solid #1F2937 !important;
+    background-color: transparent !important;
+  }
+  
+  && .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: #1F2937 !important;
+    background-color: transparent !important;
+  }
+  
+  && .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: #1F2937 !important;
+    border-width: 2px !important;
+    background-color: transparent !important;
+  }
+  
+  && .MuiOutlinedInput-input {
     color: #1F2937 !important;
     background-color: transparent !important;
     font-family: var(--font-poppins) !important;
-    font-weight: 500;
-    
-    &.Mui-focused {
-      color: #1F2937 !important;
-      background-color: transparent !important;
-      font-family: var(--font-poppins) !important;
-    }
   }
   
-  & .MuiFormHelperText-root {
+  && .MuiInputLabel-root {
     color: #1F2937 !important;
     background-color: transparent !important;
     font-family: var(--font-poppins) !important;
-    font-weight: 400;
+  }
+  
+  && .MuiFormHelperText-root {
+    color: #1F2937 !important;
+    background-color: transparent !important;
+    font-family: var(--font-poppins) !important;
   }
 `;
 
