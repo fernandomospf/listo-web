@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { Box, CircularProgress, Typography } from '@mui/material';
 
-export default function AuthCallback() {
+function AuthCallbackContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -80,5 +80,26 @@ export default function AuthCallback() {
                 Aguarde enquanto conectamos com sua conta Google
             </Typography>
         </Box>
+    );
+}
+
+export default function AuthCallbackPage() {
+    return (
+        <Suspense fallback={
+            <Box sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minHeight: '100vh'
+            }}>
+                <CircularProgress size={40} />
+                <Typography variant="body1" sx={{ mt: 2 }}>
+                    Iniciando autenticação...
+                </Typography>
+            </Box>
+        }>
+            <AuthCallbackContent />
+        </Suspense>
     );
 }
