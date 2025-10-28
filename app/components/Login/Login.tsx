@@ -333,6 +333,38 @@ export const Login: React.FC = () => {
                                             variant="outlined"
                                             error={!!errors.password}
                                             helperText={errors.password?.message as string}
+                                            sx={{
+                                                '& .MuiOutlinedInput-root': {
+                                                    backgroundColor: 'transparent !important',
+                                                    '& .MuiOutlinedInput-notchedOutline': {
+                                                        border: '1px solid #1F2937 !important',
+                                                        backgroundColor: 'transparent !important',
+                                                    },
+                                                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                                                        borderColor: '#1F2937 !important',
+                                                        backgroundColor: 'transparent !important',
+                                                    },
+                                                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                                        borderColor: '#1F2937 !important',
+                                                        borderWidth: '2px !important',
+                                                        backgroundColor: 'transparent !important',
+                                                    },
+                                                },
+                                                '& .MuiInputBase-input': {
+                                                    color: '#1F2937 !important',
+                                                    backgroundColor: 'transparent !important',
+                                                    fontFamily: 'var(--font-poppins) !important',
+                                                },
+                                                '& .MuiInputLabel-root': {
+                                                    color: '#1F2937 !important',
+                                                    backgroundColor: 'transparent !important',
+                                                    fontFamily: 'var(--font-poppins) !important',
+                                                    '&.Mui-focused': {
+                                                        color: '#1F2937 !important',
+                                                        backgroundColor: 'transparent !important',
+                                                    },
+                                                },
+                                            }}
                                             onChange={(e) => {
                                                 field.onChange(e);
                                                 clearErrorOnType();

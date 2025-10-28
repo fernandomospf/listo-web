@@ -77,6 +77,57 @@ const InputLogin = styled(TextField) <TextFieldProps>`
   }
 `;
 
+const InputPassword = styled(TextField) <TextFieldProps>`
+  width: 100%;
+  
+  & .MuiOutlinedInput-root {
+    background: transparent !important;
+    background-color: transparent !important;
+    
+    &,
+    &.Mui-focused,
+    &.Mui-filled {
+      background: transparent !important;
+      background-color: transparent !important;
+    }
+    
+    & .MuiOutlinedInput-notchedOutline {
+      border: 1px solid #1F2937 !important;
+      background: transparent !important;
+    }
+    
+    & .MuiOutlinedInput-input {
+      background: transparent !important;
+      background-color: transparent !important;
+      color: #1F2937 !important;
+      font-family: var(--font-poppins) !important;
+      
+      &[type="password"] {
+        background: transparent !important;
+        background-color: transparent !important;
+      }
+      
+      &[type="password"]:-webkit-autofill {
+        -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
+        -webkit-text-fill-color: #1F2937 !important;
+        background: transparent !important;
+        background-color: transparent !important;
+      }
+    }
+    
+    & .MuiIconButton-root {
+      color: #1F2937 !important;
+      background: transparent !important;
+    }
+  }
+  
+  & .MuiInputLabel-root {
+    background: transparent !important;
+    color: #1F2937 !important;
+    font-family: var(--font-poppins) !important;
+  }
+`;
+
 const LoginButton = styled(Button) <ButtonProps>`
     color: #f7fafdff;
     font-size: '1rem';
