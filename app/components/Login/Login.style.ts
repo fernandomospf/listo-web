@@ -4,6 +4,8 @@ const InputLogin = styled(TextField) <TextFieldProps>`
   width: 100%;
   
   & .MuiOutlinedInput-root {
+    background-color: transparent;
+    
     & .MuiOutlinedInput-notchedOutline {
       border: 1px solid #1F2937;
     }
@@ -18,7 +20,8 @@ const InputLogin = styled(TextField) <TextFieldProps>`
     }
     
     & .MuiInputBase-input {
-      color: #1F2937; 
+      color: #1F2937;
+      background-color: transparent;
     }
   }
   
@@ -31,7 +34,7 @@ const InputLogin = styled(TextField) <TextFieldProps>`
   }
   
   & .MuiFormHelperText-root {
-    color: #1F2937; 
+    color: #1F2937;
   }
 `;
 const LoginButton = styled(Button) <ButtonProps>`
@@ -45,6 +48,6 @@ const LoginButton = styled(Button) <ButtonProps>`
 
 
 export {
-    InputLogin,
-    LoginButton
+  InputLogin,
+  LoginButton
 }
