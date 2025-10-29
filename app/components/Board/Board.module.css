@@ -1,7 +1,7 @@
 .container {
     box-shadow: 0 .5px 6px -1px #a1d5f3, 0 .5px 4px -1px #020202ff;
-    height: 80vh; 
-    width: 80%; 
+    height:65vh; 
+    width: 100%; 
     border-radius: 10px;
     padding: 15px;
     overflow-y: auto;

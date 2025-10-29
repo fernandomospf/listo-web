@@ -1,6 +1,6 @@
 'use client';
 import { supabase } from '@/lib/supabaseClient';
-import { Button, Typography } from '@mui/material';
+import { Button, IconButton, InputAdornment, InputBase, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { useState, useEffect } from 'react';
 import { User } from '@supabase/supabase-js';
@@ -11,6 +11,7 @@ import CreateTask from '../CreateTask/CreateTask';
 import { useStore } from '@/app/store/useStore';
 import { taskApi } from '@/app/api/taskApi';
 import UpdateTask from '../UpdatedTask/UpdateTask';
+import SearchIcon from '@mui/icons-material/Search';
 
 function Painel() {
     const [user, setUser] = useState<User | null>(null);
@@ -63,24 +64,18 @@ function Painel() {
         await taskApi.completedTask(taskSelected as string)
         setRefetch();
     }
-    
+
     return (
         <Box className={styles.container}>
             <CreateTask open={openCreateModal} handleClose={setOpenCreateModal} />
-            <UpdateTask open={openUpdateModal} handleClose={setOpenUpdateModal}/>
-            <Box className={styles['container-title']}>
-                <Typography variant='h5' className={styles.title}>
-                    Bem-vindo, {user?.user_metadata?.name || user?.email || 'Usuário'}
-                </Typography>
-                <hr className={styles['horizontal-line']} />
-            </Box>
+            <UpdateTask open={openUpdateModal} handleClose={setOpenUpdateModal} />
             <Box className={styles['container-action']}>
                 <Button
                     variant='contained'
                     className={styles.button}
                     onClick={() => setOpenCreateModal(true)}
                 >
-                    Criar nova atividade
+                    Criar atividade
                 </Button>
                 <Button
                     variant='contained'
@@ -88,7 +83,7 @@ function Painel() {
                     disabled={!taskSelected || taskSelected.length === 0}
                     onClick={() => setOpenUpdateModal(true)}
                 >
-                    Alterar uma atividade
+                    Alterar atividade
                 </Button>
                 <Button
                     variant='contained'
@@ -96,8 +91,8 @@ function Painel() {
                     disabled={!taskSelected || taskSelected.length === 0}
                     onClick={() => handleCompletedTask()}
                 >
-           
-                    Concluir uma atividade
+
+                    Concluir atividade
                 </Button>
                 <Button
                     variant='contained'
@@ -105,8 +100,27 @@ function Painel() {
                     disabled={!taskSelected || taskSelected.length === 0}
                     onClick={handleDelete}
                 >
-                    Deletar uma atividade
+                    Deletar atividade
                 </Button>
+
+                <InputBase
+                    sx={{
+                        border: '1px solid #3e93e7',
+                        borderRadius: '10px',
+                        padding: '8px',
+                        width: '45%',
+                        marginLeft: '70px'
+                    }}
+                    placeholder="Busque por uma atividade..."
+                    inputProps={{ 'aria-label': 'search google maps' }}
+                    endAdornment={
+                        <InputAdornment position="end">
+                            <IconButton type="button" aria-label="search">
+                                <SearchIcon />
+                            </IconButton>
+                        </InputAdornment>
+                    }
+                />
             </Box>
         </Box>
     );

@@ -92,13 +92,13 @@ class TaskApi {
 
 
     async completedTask(taskId: string): Promise<Task> {
-        return this.request<Task>(`/api/v1/tasks/completed/${taskId}`, {
+        return this.request<Task>(`api/v1/tasks/completed/${taskId}`, {
             method: 'PUT'
         })
     }
 
     async deleteTask(taskId: string) {
-        return await this.request(`/api/v1/tasks/delete/${taskId}`, {
+        return await this.request(`api/v1/tasks/delete/${taskId}`, {
             method: 'DELETE'
         });
 

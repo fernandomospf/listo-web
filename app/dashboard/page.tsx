@@ -9,7 +9,7 @@ function Dashboard() {
     return (
         <Box sx={{ color: 'black' }}>
             <Header />
-            <Box sx={{ display: 'flex', gap: '24px', padding: '30px'}}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px', padding: '30px'}}>
                 <Painel />
                 <Board />
             </Box>
