@@ -59,46 +59,46 @@ class TaskApi {
     }
 
     async createTask(taskData: CreateTaskData): Promise<Task> {
-        return this.request<Task>('', {
+        return this.request<Task>('api/v1/tasks', {
             method: 'POST',
             body: JSON.stringify(taskData)
         })
     }
 
     async getById(taskId: string): Promise<Task> {
-        return this.request(`${taskId}`, {
+        return this.request(`api/v1/tasks${taskId}`, {
             method: 'GET'
         })
     }
 
     async updatedTask(taskData: CreateTaskData, taskId: string): Promise<Task> {
-        return this.request<Task>(`${taskId}`, {
+        return this.request<Task>(`api/v1/tasks${taskId}`, {
             method: 'PUT',
             body: JSON.stringify(taskData)
         });
     }
 
     async getAllTask(): Promise<Task[]> {
-        return this.request<Task[]>('list', {
+        return this.request<Task[]>('api/v1/tasks/list', {
             method: 'GET'
         })
     }
 
     async getAllTaskComplete(): Promise<Task[]> {
-        return this.request<Task[]>('list/completed', {
+        return this.request<Task[]>('api/v1/tasks/list/completed', {
             method: 'GET'
         })
     }
 
 
     async completedTask(taskId: string): Promise<Task> {
-        return this.request<Task>(`completed/${taskId}`, {
+        return this.request<Task>(`/api/v1/tasks/completed/${taskId}`, {
             method: 'PUT'
         })
     }
 
     async deleteTask(taskId: string) {
-        return await this.request(`delete/${taskId}`, {
+        return await this.request(`/api/v1/tasks/delete/${taskId}`, {
             method: 'DELETE'
         });
 

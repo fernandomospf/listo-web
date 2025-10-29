@@ -8,11 +8,11 @@ import { Box } from '@mui/system';
 import GoogleIcon from '@mui/icons-material/Google';
 import ListoIcon from '../../../public/listo-icon.png';
 import Image from 'next/image';
-import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 import { useRouter, useSearchParams } from 'next/navigation';
 import CoverPageLogin from '@/public/coverPageLogin.svg';
 import { InputLogin, InputPassword, LoginButton } from './Login.style';
+import Register from '../register/Register';
 
 export const Login: React.FC = () => {
     const { handleSubmit, watch, setValue, formState: { errors }, control } = useForm({
@@ -28,6 +28,7 @@ export const Login: React.FC = () => {
     const [serverError, setServerError] = useState<string | null>(null);
     const [rememberMe, setRememberMe] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
+    const [registerNewUser, setRegisterNewUser] = useState(false);
 
     useEffect(() => {
         setIsMounted(true);
@@ -138,30 +139,6 @@ export const Login: React.FC = () => {
             const isEmail = loginIdentifier.includes('@');
             let emailToUse = loginIdentifier;
 
-            if (!isEmail) {
-                console.log('Buscando email para username:', loginIdentifier);
-
-                const { data: userData, error: userError } = await supabase
-                    .from('user_profile')
-                    .select('email')
-                    .eq('username', loginIdentifier)
-                    .single();
-
-                if (userError) {
-                    if (userError.code === 'PGRST116') {
-                        throw new Error('Username não encontrado');
-                    }
-                    throw new Error('Erro ao buscar usuário');
-                }
-
-                if (!userData?.email) {
-                    throw new Error('Email não encontrado para este username');
-                }
-
-                emailToUse = userData.email;
-                console.log('Email encontrado:', emailToUse);
-            }
-
             const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
                 email: emailToUse,
                 password: password
@@ -169,7 +146,7 @@ export const Login: React.FC = () => {
 
             if (authError) {
                 if (authError.message === 'Invalid login credentials') {
-                    throw new Error('Email/Username ou senha incorretos');
+                    throw new Error('Email ou senha incorretos');
                 } else if (authError.message === 'Email not confirmed') {
                     throw new Error('Email não confirmado. Verifique sua caixa de entrada.');
                 } else {
@@ -254,127 +231,135 @@ export const Login: React.FC = () => {
                                 alt='Listo image brand'
                             />
                         </Box>
-                        <Box className={styles['box-login']}>
-                            <form
-                                onSubmit={handleSubmit(onSubmit)}
-                                className={styles['form-login']}
-                            >
-                                <Controller
-                                    name="email"
-                                    control={control}
-                                    rules={{
-                                        required: "Email é obrigatório",
-                                        pattern: {
-                                            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                                            message: "Email inválido"
-                                        }
-                                    }}
-                                    render={({ field }) => (
-                                        <InputLogin
-                                            {...field}
-                                            label="Email"
-                                            variant="outlined"
-                                            error={!!errors.email}
-                                            helperText={errors.email?.message as string}
-                                            onChange={(e) => {
-                                                field.onChange(e);
-                                                clearErrorOnType();
-                                            }}
-                                            sx={{
-                                                '& .MuiOutlinedInput-root': {
-                                                    backgroundColor: 'transparent !important',
-                                                    '& .MuiOutlinedInput-notchedOutline': {
-                                                        border: '1px solid #1F2937 !important',
-                                                        backgroundColor: 'transparent !important',
-                                                    },
-                                                    '&:hover .MuiOutlinedInput-notchedOutline': {
-                                                        borderColor: '#1F2937 !important',
-                                                        backgroundColor: 'transparent !important',
-                                                    },
-                                                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                                                        borderColor: '#1F2937 !important',
-                                                        borderWidth: '2px !important',
-                                                        backgroundColor: 'transparent !important',
-                                                    },
-                                                },
-                                                '& .MuiInputBase-input': {
-                                                    color: '#1F2937 !important',
-                                                    backgroundColor: 'transparent !important',
-                                                    fontFamily: 'var(--font-poppins) !important',
-                                                },
-                                                '& .MuiInputLabel-root': {
-                                                    color: '#1F2937 !important',
-                                                    backgroundColor: 'transparent !important',
-                                                    fontFamily: 'var(--font-poppins) !important',
-                                                    '&.Mui-focused': {
-                                                        color: '#1F2937 !important',
-                                                        backgroundColor: 'transparent !important',
-                                                    },
-                                                },
-                                            }}
-                                        />
-                                    )}
+                        {
+                            registerNewUser ? (
+                                <Register 
+                                    styles={styles} 
+                                    setRegisterNewUser={() => setRegisterNewUser(false)}
                                 />
-                                <Controller
-                                    name="password"
-                                    control={control}
-                                    rules={{
-                                        required: "Senha é obrigatória",
-                                        minLength: {
-                                            value: 6,
-                                            message: "Senha deve ter pelo menos 6 caracteres"
-                                        }
-                                    }}
-                                    render={({ field }) => (
-                                        <InputPassword
-                                            {...field}
-                                            label="Senha"
-                                            autoComplete='off'
-                                            type="password"
-                                            variant="outlined"
-                                            error={!!errors.password}
-                                            helperText={errors.password?.message as string}
-                                            sx={{
-                                                '& .MuiOutlinedInput-root': {
-                                                    backgroundColor: 'transparent !important',
-                                                    '& .MuiOutlinedInput-notchedOutline': {
-                                                        border: '1px solid #1F2937 !important',
-                                                        backgroundColor: 'transparent !important',
-                                                    },
-                                                    '&:hover .MuiOutlinedInput-notchedOutline': {
-                                                        borderColor: '#1F2937 !important',
-                                                        backgroundColor: 'transparent !important',
-                                                    },
-                                                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                                                        borderColor: '#1F2937 !important',
-                                                        borderWidth: '2px !important',
-                                                        backgroundColor: 'transparent !important',
-                                                    },
-                                                },
-                                                '& .MuiInputBase-input': {
-                                                    color: '#1F2937 !important',
-                                                    backgroundColor: 'transparent !important',
-                                                    fontFamily: 'var(--font-poppins) !important',
-                                                },
-                                                '& .MuiInputLabel-root': {
-                                                    color: '#1F2937 !important',
-                                                    backgroundColor: 'transparent !important',
-                                                    fontFamily: 'var(--font-poppins) !important',
-                                                    '&.Mui-focused': {
-                                                        color: '#1F2937 !important',
-                                                        backgroundColor: 'transparent !important',
-                                                    },
-                                                },
-                                            }}
-                                            onChange={(e) => {
-                                                field.onChange(e);
-                                                clearErrorOnType();
-                                            }}
-                                        />
-                                    )}
-                                />
-                                {/* TODO: Implementar o esqueceu sua senha */}
-                                {/* <Typography
+                            ) : (
+                                <React.Fragment>
+                                    <Box className={styles['box-login']}>
+                                        <form
+                                            onSubmit={handleSubmit(onSubmit)}
+                                            className={styles['form-login']}
+                                        >
+                                            <Controller
+                                                name="email"
+                                                control={control}
+                                                rules={{
+                                                    required: "Email é obrigatório",
+                                                    pattern: {
+                                                        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                                        message: "Email inválido"
+                                                    }
+                                                }}
+                                                render={({ field }) => (
+                                                    <InputLogin
+                                                        {...field}
+                                                        label="Email"
+                                                        variant="outlined"
+                                                        error={!!errors.email}
+                                                        helperText={errors.email?.message as string}
+                                                        onChange={(e) => {
+                                                            field.onChange(e);
+                                                            clearErrorOnType();
+                                                        }}
+                                                        sx={{
+                                                            '& .MuiOutlinedInput-root': {
+                                                                backgroundColor: 'transparent !important',
+                                                                '& .MuiOutlinedInput-notchedOutline': {
+                                                                    border: '1px solid #1F2937 !important',
+                                                                    backgroundColor: 'transparent !important',
+                                                                },
+                                                                '&:hover .MuiOutlinedInput-notchedOutline': {
+                                                                    borderColor: '#1F2937 !important',
+                                                                    backgroundColor: 'transparent !important',
+                                                                },
+                                                                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                                                    borderColor: '#1F2937 !important',
+                                                                    borderWidth: '2px !important',
+                                                                    backgroundColor: 'transparent !important',
+                                                                },
+                                                            },
+                                                            '& .MuiInputBase-input': {
+                                                                color: '#1F2937 !important',
+                                                                backgroundColor: 'transparent !important',
+                                                                fontFamily: 'var(--font-poppins) !important',
+                                                            },
+                                                            '& .MuiInputLabel-root': {
+                                                                color: '#1F2937 !important',
+                                                                backgroundColor: 'transparent !important',
+                                                                fontFamily: 'var(--font-poppins) !important',
+                                                                '&.Mui-focused': {
+                                                                    color: '#1F2937 !important',
+                                                                    backgroundColor: 'transparent !important',
+                                                                },
+                                                            },
+                                                        }}
+                                                    />
+                                                )}
+                                            />
+                                            <Controller
+                                                name="password"
+                                                control={control}
+                                                rules={{
+                                                    required: "Senha é obrigatória",
+                                                    minLength: {
+                                                        value: 6,
+                                                        message: "Senha deve ter pelo menos 6 caracteres"
+                                                    }
+                                                }}
+                                                render={({ field }) => (
+                                                    <InputPassword
+                                                        {...field}
+                                                        label="Senha"
+                                                        autoComplete='off'
+                                                        type="password"
+                                                        variant="outlined"
+                                                        error={!!errors.password}
+                                                        helperText={errors.password?.message as string}
+                                                        sx={{
+                                                            '& .MuiOutlinedInput-root': {
+                                                                backgroundColor: 'transparent !important',
+                                                                '& .MuiOutlinedInput-notchedOutline': {
+                                                                    border: '1px solid #1F2937 !important',
+                                                                    backgroundColor: 'transparent !important',
+                                                                },
+                                                                '&:hover .MuiOutlinedInput-notchedOutline': {
+                                                                    borderColor: '#1F2937 !important',
+                                                                    backgroundColor: 'transparent !important',
+                                                                },
+                                                                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                                                    borderColor: '#1F2937 !important',
+                                                                    borderWidth: '2px !important',
+                                                                    backgroundColor: 'transparent !important',
+                                                                },
+                                                            },
+                                                            '& .MuiInputBase-input': {
+                                                                color: '#1F2937 !important',
+                                                                backgroundColor: 'transparent !important',
+                                                                fontFamily: 'var(--font-poppins) !important',
+                                                            },
+                                                            '& .MuiInputLabel-root': {
+                                                                color: '#1F2937 !important',
+                                                                backgroundColor: 'transparent !important',
+                                                                fontFamily: 'var(--font-poppins) !important',
+                                                                '&.Mui-focused': {
+                                                                    color: '#1F2937 !important',
+                                                                    backgroundColor: 'transparent !important',
+                                                                },
+                                                            },
+                                                        }}
+                                                        onChange={(e) => {
+                                                            field.onChange(e);
+                                                            clearErrorOnType();
+                                                        }}
+                                                    />
+                                                )}
+                                            />
+                                            {/* TODO: Implementar o esqueceu sua senha */}
+                                            {/* <Typography
                                 className={styles['forget-password']}
                                 variant="body1"
                             >
@@ -387,69 +372,72 @@ export const Login: React.FC = () => {
                                 </Link>
                             </Typography> */}
 
-                                {/* Checkbox sempre renderizado, mas com verificação de montagem */}
-                                <FormGroup>
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                checked={rememberMe}
-                                                onChange={handleRememberMeChange}
-                                                sx={{
-                                                    '& .MuiSvgIcon-root': {
-                                                        fontSize: '22px',
-                                                        borderRadius: '4px',
-                                                    },
-                                                    color: '#1F2937',
-                                                    '&.Mui-checked': {
-                                                        color: '#1F2937',
-                                                    },
-                                                    '&:hover': {
-                                                        backgroundColor: 'rgba(59, 130, 246, 0.04)',
-                                                    },
-                                                }}
-                                            />
-                                        }
-                                        label="Lembrar de mim?"
-                                        sx={{
-                                            '& .MuiFormControlLabel-label': {
-                                                fontSize: '16px',
-                                                color: '#1F2937',
-                                                fontWeight: 400,
-                                                fontFamily: 'var(--font-poppins) !important',
-                                            },
-                                        }}
-                                    />
-                                </FormGroup>
-                                <hr className={styles.horizontalLine} />
-                                <Box className={styles['button-container']}>
-                                    <LoginButton
-                                        type="submit"
-                                        variant="contained"
-                                        color="primary"
-                                        className={styles.buttonLogin}
-                                        disabled={isLoading}
-                                    >
-                                        {isLoading ? 'ENTRANDO...' : 'ENTRAR'}
-                                    </LoginButton>
+                                            {/* Checkbox sempre renderizado, mas com verificação de montagem */}
+                                            <FormGroup>
+                                                <FormControlLabel
+                                                    control={
+                                                        <Checkbox
+                                                            checked={rememberMe}
+                                                            onChange={handleRememberMeChange}
+                                                            sx={{
+                                                                '& .MuiSvgIcon-root': {
+                                                                    fontSize: '22px',
+                                                                    borderRadius: '4px',
+                                                                },
+                                                                color: '#1F2937',
+                                                                '&.Mui-checked': {
+                                                                    color: '#1F2937',
+                                                                },
+                                                                '&:hover': {
+                                                                    backgroundColor: 'rgba(59, 130, 246, 0.04)',
+                                                                },
+                                                            }}
+                                                        />
+                                                    }
+                                                    label="Lembrar de mim?"
+                                                    sx={{
+                                                        '& .MuiFormControlLabel-label': {
+                                                            fontSize: '16px',
+                                                            color: '#1F2937',
+                                                            fontWeight: 400,
+                                                            fontFamily: 'var(--font-poppins) !important',
+                                                        },
+                                                    }}
+                                                />
+                                            </FormGroup>
+                                            <hr className={styles.horizontalLine} />
+                                            <Box className={styles['button-container']}>
+                                                <LoginButton
+                                                    type="submit"
+                                                    variant="contained"
+                                                    color="primary"
+                                                    className={styles.buttonLogin}
+                                                    disabled={isLoading}
+                                                >
+                                                    {isLoading ? 'ENTRANDO...' : 'ENTRAR'}
+                                                </LoginButton>
 
-                                    <LoginButton
-                                        variant="contained"
-                                        color="primary"
-                                        className={styles.googleButton}
-                                        onClick={handleGoogleLogin}
-                                        disabled={socialLoading}
-                                        startIcon={<GoogleIcon />}
-                                    >
-                                        {socialLoading ? 'CONECTANDO...' : 'CONTINUAR COM GOOGLE'}
-                                    </LoginButton>
-                                </Box>
-                            </form>
-                        </Box>
-                        <Box className={styles['register-link']}>
-                            <Link href="/register" passHref>
-                                Registre-se
-                            </Link>
-                        </Box>
+                                                <LoginButton
+                                                    variant="contained"
+                                                    color="primary"
+                                                    className={styles.googleButton}
+                                                    onClick={handleGoogleLogin}
+                                                    disabled={socialLoading}
+                                                    startIcon={<GoogleIcon />}
+                                                >
+                                                    {socialLoading ? 'CONECTANDO...' : 'CONTINUAR COM GOOGLE'}
+                                                </LoginButton>
+                                            </Box>
+                                        </form>
+                                    </Box>
+                                    <Box className={styles['register-link']} onClick={() => setRegisterNewUser(true)}>
+                                        {/* <Link href="/register" passHref> */}
+                                            Registre-se
+                                        {/* </Link> */}
+                                    </Box>
+                                </React.Fragment>
+                            )
+                        }
                     </Box>
                 </Box>
             </Box>
