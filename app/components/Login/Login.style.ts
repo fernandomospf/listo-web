@@ -132,8 +132,9 @@ const LoginButton = styled(Button) <ButtonProps>`
     color: #f7fafdff;
     font-size: '1rem';
     font-weight: 600;
-    border-color: '#4285F4';
+    border-color: '#b2afb6';
     width: 100%;
+    background-color: #b2afb698 !important;
     font-family: var(--font-poppins) !important;
 
 `;

@@ -431,9 +431,7 @@ export const Login: React.FC = () => {
                                         </form>
                                     </Box>
                                     <Box className={styles['register-link']} onClick={() => setRegisterNewUser(true)}>
-                                        {/* <Link href="/register" passHref> */}
                                             Registre-se
-                                        {/* </Link> */}
                                     </Box>
                                 </React.Fragment>
                             )

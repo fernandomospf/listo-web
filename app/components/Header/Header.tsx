@@ -77,9 +77,9 @@ function Header() {
                     <IconButton
                         onClick={handleClick}
                         sx={{
-                            color: '#72c0ecff',
+                            color: '#5b5951',
                             '&:hover': {
-                                color: '#72c0ecff',
+                                color: '#5b5951',
                             }
                         }}
                     >
