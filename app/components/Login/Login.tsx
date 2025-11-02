@@ -13,6 +13,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import CoverPageLogin from '@/public/coverPageLogin.svg';
 import { InputLogin, InputPassword, LoginButton } from './Login.style';
 import Register from '../register/Register';
+import { toast, ToastContainer } from 'react-toastify';
 
 export const Login: React.FC = () => {
     const { handleSubmit, watch, setValue, formState: { errors }, control } = useForm({
@@ -45,7 +46,6 @@ export const Login: React.FC = () => {
                 const { data: { session } } = await supabase.auth.getSession();
                 if (session?.access_token) {
                     saveAuthToken(session.access_token);
-                    console.log('✅ Sessão existente encontrada, redirecionando...');
                     router.push('/dashboard');
                 }
             } catch (error) {
@@ -67,7 +67,6 @@ export const Login: React.FC = () => {
     const saveAuthToken = (accessToken: string) => {
         if (typeof window !== 'undefined') {
             localStorage.setItem('access_token', accessToken);
-            console.log('✅ Access token salvo no localStorage');
         }
     };
 
@@ -76,7 +75,6 @@ export const Login: React.FC = () => {
             localStorage.removeItem('access_token');
             sessionStorage.removeItem('access_token');
             localStorage.removeItem('user_email');
-            console.log('🔐 Tokens removidos');
         }
     };
 
@@ -85,8 +83,6 @@ export const Login: React.FC = () => {
         setServerError(null);
 
         try {
-            console.log('🔄 Iniciando login com Google...');
-
             const { data, error } = await supabase.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
@@ -99,18 +95,14 @@ export const Login: React.FC = () => {
             });
 
             if (error) {
-                console.error('❌ Erro do Supabase:', error);
                 throw new Error(error.message);
             }
 
-            console.log('✅ Fluxo OAuth iniciado com sucesso:', data);
-
-
         } catch (error) {
-            console.error('❌ Erro no login com Google:', error);
             const errorMessage = error instanceof Error ? error.message : 'Erro ao conectar com Google';
             setServerError(errorMessage);
             clearAuthTokens();
+            toast.error('Erro ao conectar com Google. Tente novamente.');
         } finally {
             setSocialLoading(false);
         }
@@ -121,8 +113,6 @@ export const Login: React.FC = () => {
         setServerError(null);
 
         try {
-            console.log('Tentando login:', data);
-
             if (rememberMe && data.email) {
                 localStorage.setItem('email', data.email);
             } else {
@@ -154,33 +144,34 @@ export const Login: React.FC = () => {
                 }
             }
 
-            console.log('✅ Login bem-sucedido:', authData);
-
             if (authData.session?.access_token) {
                 saveAuthToken(authData.session.access_token);
-                console.log('🎯 Access Token salvo');
 
                 if (authData.user?.email) {
                     localStorage.setItem('user_email', authData.user.email);
                 }
-            } else {
-                console.warn('⚠️ Access token não encontrado na resposta');
             }
 
             await new Promise(resolve => setTimeout(resolve, 1000));
 
+            toast.success('Login realizado com sucesso!');
             router.push('/dashboard');
 
         } catch (error) {
-            console.error('❌ Erro no login:', error);
             const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
             setServerError(errorMessage);
 
-            clearAuthTokens();
-
-            if (errorMessage.includes('Failed to fetch') || errorMessage.includes('Network')) {
-                setServerError('Erro de conexão. Verifique sua internet e tente novamente.');
+            if (errorMessage.includes('Email ou senha incorretos')) {
+                toast.error('Email ou senha incorretos. Verifique suas credenciais.');
+            } else if (errorMessage.includes('Email não confirmado')) {
+                toast.warning('Email não confirmado. Verifique sua caixa de entrada.');
+            } else if (errorMessage.includes('Failed to fetch') || errorMessage.includes('Network')) {
+                toast.error('Erro de conexão. Verifique sua internet e tente novamente.');
+            } else {
+                toast.error('Erro ao realizar login. Tente novamente.');
             }
+
+            clearAuthTokens();
         } finally {
             setIsLoading(false);
         }
@@ -211,6 +202,18 @@ export const Login: React.FC = () => {
                 <Typography>Carregando...</Typography>
             </Box>
         }>
+            <ToastContainer 
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+            />
             <Box className={styles['main-container']}>
                 <Box className={styles['image-container']}>
                     <Image
@@ -358,21 +361,7 @@ export const Login: React.FC = () => {
                                                     />
                                                 )}
                                             />
-                                            {/* TODO: Implementar o esqueceu sua senha */}
-                                            {/* <Typography
-                                className={styles['forget-password']}
-                                variant="body1"
-                            >
-                                Esqueceu sua senha?{' '}
-                                <Link
-                                    href="/forget-password"
-                                    className={styles['forget-password-link']}
-                                >
-                                    Clique aqui
-                                </Link>
-                            </Typography> */}
 
-                                            {/* Checkbox sempre renderizado, mas com verificação de montagem */}
                                             <FormGroup>
                                                 <FormControlLabel
                                                     control={
