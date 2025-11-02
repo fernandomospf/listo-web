@@ -19,17 +19,12 @@ const poppins = Poppins({
   variable: '--font-poppins',
 });
 
-
 export const metadata: Metadata = {
   title: "Listo",
   description: "Seu app de controle de atividade",
-  icons: [
-     {
-      url: '/favi.png',
-      type: "image/png",
-      sizes: "32x32",
-    }
-  ]
+  icons: {
+    icon: '/favi.ico',
+  }
 };
 
 export default function RootLayout({
@@ -38,7 +33,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="pt-BR">
       <body className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} antialiased`}>
         <div className="layout-container">
           <main className="main-content">
