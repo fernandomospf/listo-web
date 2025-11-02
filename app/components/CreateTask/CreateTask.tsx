@@ -1,5 +1,6 @@
+import React from 'react';
 import { Box, Button, Dialog, IconButton, TextField, Typography, MenuItem, Select, FormControl, InputLabel, CircularProgress } from '@mui/material';
-import { useState } from 'react'
+import { useState, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import CloseIcon from '@mui/icons-material/Close';
 import { createTaskSchema } from './schemaCreateTask';
@@ -26,6 +27,11 @@ function CreateTask({ open, handleClose, onTaskCreated }: CreateTaskProps) {
         }
     });
 
+    const BackdropComponent = useCallback((props: any) => {
+        const { transitionDuration, ownerState, ...filteredProps } = props;
+        return <div {...filteredProps} className={styles.dialogBackdrop} />;
+    }, []);
+
     const onSubmit = async (data: FormData) => {
         setIsLoading(true);
         try {
@@ -42,7 +48,6 @@ function CreateTask({ open, handleClose, onTaskCreated }: CreateTaskProps) {
             };
 
             const newTask = await taskApi.createTask(taskData);
-
 
             toast.success('Tarefa criada com sucesso!', {
                 position: "top-right",
@@ -74,6 +79,7 @@ function CreateTask({ open, handleClose, onTaskCreated }: CreateTaskProps) {
                     errorMessage = error.message;
                 }
             }
+            toast.error(errorMessage);
         } finally {
             setIsLoading(false);
         }
@@ -86,14 +92,30 @@ function CreateTask({ open, handleClose, onTaskCreated }: CreateTaskProps) {
         }
     };
 
+    const [isClient, setIsClient] = useState(false);
+
+    React.useEffect(() => {
+        setIsClient(true);
+    }, []);
+
+    if (!isClient) {
+        return null;
+    }
+
     return (
         <Dialog
             open={open}
             onClose={handleCloseModal}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
-            maxWidth="sm"
+            maxWidth="lg"
             fullWidth
+            slots={{
+                backdrop: BackdropComponent,
+            }}
+            PaperProps={{
+                className: styles.glassEffect
+            }}
         >
             <Box className={styles.dialogContainer}>
                 <IconButton
@@ -104,11 +126,11 @@ function CreateTask({ open, handleClose, onTaskCreated }: CreateTaskProps) {
                 >
                     <CloseIcon />
                 </IconButton>
-
-                <Typography variant="h5" className={styles.title}>
-                    Criar nova tarefa
-                </Typography>
             </Box>
+            
+            <Typography variant="h5" className={styles.title}>
+                Criar nova tarefa
+            </Typography>
 
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Box className={styles.formContainer}>
@@ -149,7 +171,7 @@ function CreateTask({ open, handleClose, onTaskCreated }: CreateTaskProps) {
                             <Select
                                 label="Status"
                                 {...register("status")}
-                                defaultValue="pending"
+                                defaultValue="new"
                             >
                                 <MenuItem value="new">Novo</MenuItem>
                                 <MenuItem value="in_progress">Em Andamento</MenuItem>

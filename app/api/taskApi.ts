@@ -66,13 +66,17 @@ class TaskApi {
     }
 
     async getById(taskId: string): Promise<Task> {
-        return this.request(`api/v1/tasks${taskId}`, {
+        return this.request(`api/v1/tasks/${taskId}`, {
             method: 'GET'
         })
     }
 
     async updatedTask(taskData: CreateTaskData, taskId: string): Promise<Task> {
-        return this.request<Task>(`api/v1/tasks${taskId}`, {
+        if(taskData.status === 'done') {
+            return this.completedTask(taskId);
+        }
+        
+        return this.request<Task>(`api/v1/tasks/${taskId}`, {
             method: 'PUT',
             body: JSON.stringify(taskData)
         });

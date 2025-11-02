@@ -4,8 +4,9 @@
     align-items: center;
     padding: 5px;
     justify-content: space-between;
-    box-shadow: 0 .5px 6px -1px #a1d5f3, 0 .5px 4px -1px #a1d5f3;
+    box-shadow: 0 .5px 6px -1px #8d8d8d7c, 0 .5px 4px -1px #8d8d8d7c;
     margin-bottom: 15px;
+    background-color: #f2f6f9;
 }
 
 .nav-list {

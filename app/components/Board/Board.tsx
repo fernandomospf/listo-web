@@ -130,10 +130,6 @@ function Board() {
         {
             key: 'header_limit_date',
             title: 'Data Limite'
-        },
-        {
-            key: 'header_archived_at',
-            title: 'Concluída em'
         }
     ];
 
@@ -209,9 +205,6 @@ function Board() {
                                     </TableCell>
                                     <TableCell align="center">
                                         {task.due_date ? new Date(task.due_date).toLocaleDateString('pt-BR') : '-'}
-                                    </TableCell>
-                                    <TableCell align="center">
-                                        {task.archived_at ? new Date(task.archived_at).toLocaleDateString('pt-BR') : '-'}
                                     </TableCell>
                                 </TableRow>
                             )

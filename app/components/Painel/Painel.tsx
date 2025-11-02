@@ -105,7 +105,7 @@ function Painel() {
 
                 <InputBase
                     sx={{
-                        border: '1px solid #3e93e7',
+                        border: '1px solid #6986973f',
                         borderRadius: '10px',
                         padding: '8px',
                         width: '45%',

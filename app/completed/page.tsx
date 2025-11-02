@@ -125,7 +125,7 @@ function Completed() {
                       {task.due_date ? new Date(task.due_date).toLocaleDateString('pt-BR') : '-'}
                     </TableCell>
                     <TableCell align="center">
-                      {task.archived_at ? new Date(task.archived_at).toLocaleDateString('pt-BR') : '-'}
+                      {task.completed_at ? new Date(task.completed_at).toLocaleDateString('pt-BR') : '-'}
                     </TableCell>
                   </TableRow>
                 )

@@ -4,7 +4,7 @@
 }
 
 .container {
-    box-shadow: 0 .5px 6px -1px #a1d5f3, 0 .5px 4px -1px #020202ff;
+    box-shadow: 0 .5px 6px -1px #6986973f, 0 .5px 4px -1px #6986973f;
     height: 10vh;
     width: 100%;
     border-radius: 10px;
@@ -33,7 +33,7 @@
 }
 
 .horizontal-line {
-    color: #a1d5f3;
+    color: #8d8d8d7c;
     width: 60%;
     margin: 0 auto;
 }
