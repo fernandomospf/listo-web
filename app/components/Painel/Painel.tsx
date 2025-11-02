@@ -19,7 +19,8 @@ function Painel() {
     const [isMounted, setIsMounted] = useState(false);
     const [openCreateModal, setOpenCreateModal] = useState(false);
     const [openUpdateModal, setOpenUpdateModal] = useState(false);
-    const { taskSelected, setRefetch, refetch, selectedTasks } = useStore();
+    const { filter, filteredList, taskSelected, setRefetch, refetch, selectedTasks } = useStore();
+    console.log("🚀 ~ Painel ~ filteredList:", filteredList)
 
     useEffect(() => {
         setIsMounted(true);
@@ -111,6 +112,7 @@ function Painel() {
                         width: '45%',
                         marginLeft: '70px'
                     }}
+                    onChange={filter}
                     placeholder="Busque por uma atividade..."
                     inputProps={{ 'aria-label': 'search google maps' }}
                     endAdornment={

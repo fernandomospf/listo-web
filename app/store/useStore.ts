@@ -6,6 +6,8 @@ const initialState = {
     tasks: [],
     taskSelected: '',
     refetch: false,
+    filteredList: [],
+    searchInput: '',
 };
 
 export const useStore = create<UseStoreInterface>((set, get) => ({
@@ -45,5 +47,19 @@ export const useStore = create<UseStoreInterface>((set, get) => ({
                 refetch: !state.refetch
             }
         })
+    },
+    setSearchInput: (input: string) => set({ searchInput: input }),
+    filter: () => {
+        const state = get();
+        const searchTerm = state.searchInput?.toLowerCase().trim() || '';
+        
+        if (!searchTerm) {
+            return state.tasks;
+        }
+        
+        return state.tasks.filter(task => 
+            task.title?.toLowerCase().includes(searchTerm) ||
+            task.description?.toLowerCase().includes(searchTerm)
+        );
     }
 }));

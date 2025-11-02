@@ -25,14 +25,18 @@ export type CreateTaskData = {
 
 export interface StoreState {
     tasks: Task[];
+    filteredList: Task[];
     taskSelected: string | null;
     refetch: boolean;
+    searchInput: string;
 }
 interface StoreActions {
     addTask: (tasks: Task[]) => void;
     ApiGetAllTask: (setLoading: (status: boolean) => void) => void;
     selectedTasks: (id: string) => void;
-    setRefetch: () => void
+    setRefetch: () => void;
+    setSearchInput: (input: string) => void; 
+    filter: () => void;
 }
 
 export interface UseStoreInterface extends StoreActions, StoreState {}
