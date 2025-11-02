@@ -19,7 +19,7 @@ import CheckLoading from '@/public/check-box.gif';
 import Image from "next/image";
 
 function Board() {
-    const { tasks, taskSelected, ApiGetAllTask, selectedTasks, refetch } = useStore();
+    const { tasks, taskSelected, ApiGetAllTask, selectedTasks, refetch, filteredList } = useStore();
     const [loading, setLoading] = useState(true);
 
     const fetchData = useCallback(() => {
@@ -165,7 +165,7 @@ function Board() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {tasks.map((task) => {
+                        {filteredList.map((task) => {
                             const isSelected = taskSelected === task.id;
                             const isDisabled = taskSelected !== task.id && taskSelected !== '';
                             return (

@@ -36,7 +36,7 @@ interface StoreActions {
     selectedTasks: (id: string) => void;
     setRefetch: () => void;
     setSearchInput: (input: string) => void; 
-    filter: () => void;
+    filter: (evt: any) => void;
 }
 
 export interface UseStoreInterface extends StoreActions, StoreState {}

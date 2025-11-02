@@ -22,6 +22,7 @@ export const useStore = create<UseStoreInterface>((set, get) => ({
         try {
             const response = await taskApi.getAllTask();
             get().addTask(response)
+            set({ filteredList: response })
             setLoading(false);
         } catch (error) {
             console.log(`[API - GetAllTask] - ${error}`)
@@ -49,17 +50,15 @@ export const useStore = create<UseStoreInterface>((set, get) => ({
         })
     },
     setSearchInput: (input: string) => set({ searchInput: input }),
-    filter: () => {
+    filter: (evt: React.ChangeEvent<HTMLInputElement>) => {
         const state = get();
-        const searchTerm = state.searchInput?.toLowerCase().trim() || '';
-        
-        if (!searchTerm) {
-            return state.tasks;
-        }
-        
-        return state.tasks.filter(task => 
-            task.title?.toLowerCase().includes(searchTerm) ||
-            task.description?.toLowerCase().includes(searchTerm)
+        const inputSearch = evt.target.value.toLowerCase().trim();
+
+        const response = state.tasks.filter(task =>
+            task.title?.toLowerCase().includes(inputSearch) ||
+            task.description?.toLowerCase().includes(inputSearch)
         );
+
+        set({ filteredList: response });
     }
 }));
